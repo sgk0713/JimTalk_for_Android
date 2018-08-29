@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".chat.MessageActivity">
 
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/messageactivity_recyclerview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="0dp"
+        app:layout_constraintBottom_toTopOf="@id/messageactivity_editText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </android.support.v7.widget.RecyclerView>
     <EditText
         android:id="@+id/messageactivity_editText"
         android:layout_width="0dp"
