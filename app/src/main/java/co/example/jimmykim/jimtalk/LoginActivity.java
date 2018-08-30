@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
-//        firebaseAuth.signOut();
+        firebaseAuth.signOut();
 
         String splash_background = firebaseRemoteConfig.getString(getString(R.string.rc_color));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -50,8 +50,6 @@ public class LoginActivity extends AppCompatActivity {
 
         id = findViewById(R.id.et_login_id);
         password = findViewById(R.id.et_login_pw);
-
-
 
         login = findViewById(R.id.btn_login);
         signup = findViewById(R.id.btn_signup);

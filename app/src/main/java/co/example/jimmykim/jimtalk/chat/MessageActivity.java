@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,11 +53,11 @@ public class MessageActivity extends AppCompatActivity {
         editText = findViewById(R.id.messageactivity_editText);
 
         recyclerView = findViewById(R.id.messageactivity_recyclerview);
+        checkChatRoom();
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String tmpMessage = editText.getText().toString();
-                editText.setText("");
                 if(tmpMessage.equals("")) {
                     return;
                 }
@@ -78,7 +79,13 @@ public class MessageActivity extends AppCompatActivity {
                     ChatModel.Comment comment = new ChatModel.Comment();
                     comment.uid = uid;
                     comment.message = tmpMessage;
-                    FirebaseDatabase.getInstance().getReference().child("chatrooms").child(chatRoomUid).child("comments").push().setValue(comment);
+                    FirebaseDatabase.getInstance().getReference().child("chatrooms").child(chatRoomUid).child("comments").push().setValue(comment)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            editText.setText("");
+                        }
+                    });
                 }
             }
         });
@@ -145,7 +152,10 @@ public class MessageActivity extends AppCompatActivity {
                     for(DataSnapshot item : dataSnapshot.getChildren()){
                         comments.add(item.getValue(ChatModel.Comment.class));
                     }
+                    //메세지 갱신
                     notifyDataSetChanged();
+                    //최근메세지로 옮기기
+                    recyclerView.scrollToPosition(comments.size()-1);
                 }
 
                 @Override
@@ -170,6 +180,7 @@ public class MessageActivity extends AppCompatActivity {
                 messageViewHolder.textView_message.setText(comments.get(position).message);
                 messageViewHolder.textView_message.setBackgroundResource(R.drawable.right);
                 messageViewHolder.linearLayout_destination.setVisibility(View.INVISIBLE);
+                messageViewHolder.linearLayout.setGravity(Gravity.RIGHT);
             }else{
                 Glide.with(holder.itemView.getContext())
                         .load(userModel.profileImageUrl)
@@ -180,6 +191,7 @@ public class MessageActivity extends AppCompatActivity {
                 messageViewHolder.textView_message.setBackgroundResource(R.drawable.left);
                 messageViewHolder.textView_message.setText(comments.get(position).message);
                 messageViewHolder.textView_message.setTextSize(25);
+                messageViewHolder.linearLayout.setGravity(Gravity.LEFT);
             }
         }
 
@@ -193,6 +205,7 @@ public class MessageActivity extends AppCompatActivity {
             public TextView textView_name;
             public ImageView imageView_profile;
             public LinearLayout linearLayout_destination;
+            public LinearLayout linearLayout;
 
             public MessageViewHolder(View view) {
                 super(view);
@@ -200,7 +213,7 @@ public class MessageActivity extends AppCompatActivity {
                 textView_name = view.findViewById(R.id.messageitem_textview_name);
                 imageView_profile = view.findViewById(R.id.messageitem_imageview_profile);
                 linearLayout_destination = view.findViewById(R.id.messageitem_linearlayout_destination);
-
+                linearLayout = view.findViewById(R.id.messageitem_linearlayout);
 
 
             }
